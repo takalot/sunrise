@@ -3,67 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <title>זריחה1</title>
-  <style>	
-      body {
-        font-family: Tahoma;
-      }
-      #wrapper {
-        text-align: center;
-		margin: auto;
-        max-width: 1200px;
-      }
-	  *, :before, :after {
-			box-sizing: border-box;
-		}
+  <style>
+  body {
+    font-family: "David", sans-serif;
+    font-weight: bold;
+    background-color: #f8f3e8;
+    margin: 0;
+    padding: 0;
+  }
 
-		.clock {
-			left: 0;
-			position: fixed;
-			top: 0;
-			width: 50%;
-		}
-      #current-time{
-        font-size: 100px;
-        <!-- border: 1px solid green; -->
-      }
-	  .regular-seconds {
-      font-weight: normal;
-	  font-size: 60px;
-	  color:red;
-	  }
-      #tempsecoule {
-        //border: 1px solid black;
-	  }
-	  #sunrise {      
-        padding: 0px;
-        font-family: Helvetica;
-        font-size: 120px;
-      }
-	 #countdown {
-      font-size: 60px;
-      color: black;
-    }
-	 #tempsecoule {
-      display: none;
-    }
-    .strikethrough {
-      text-decoration: line-through;
-      color: red;
-    }
-    </style>
-  </head>
-  <body>
-    <div id="wrapper"> 
-<h1><span id="dateHeb"></span>     <span style="color: green;"id="current-date"></span>                
-<canvas id="clock" class="clock"></canvas></h1></br>
-	<h2 'ספירת' style="color: red;" id="hebcal-omer"></h2>	
-	<h1 style="color: blue;" id="dailyDaf"></h1>	
-      <h1><span id="current-time"></span></h1>
-      <h1><div <span style="font-size: 250px; color: green;" id="countdown"></div></h1>
-      <h1><div id="tempsecoule"></div></h1>
-      <h1><span id="sunrise"></span></h1>
-	  <p id="sunset-time"></p>
+  #wrapper {
+    text-align: center;
+    width: 100vw; /* רוחב מלא של המסך */
+    padding: 20px;
+  }
+
+  *, ::before, ::after {
+    box-sizing: border-box;
+  }
+
+  .clock {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+  }
+
+  #current-time {
+    font-size: 300px;
+    /* border: 1px solid green; */
+  }
+
+  .side {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;         /* פריסה לרוחב מלא */
+    padding: 0 30px;     /* ריווח פנימי */
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .label {
+    font-family: 'Guttman-Aram', serif;
+    color: brown;
+    font-size: 28px;
+    margin-top: 10px;
+  }
+
+  .regular-seconds {
+    font-weight: normal;
+    font-size: 60px;
+    color: red;
+  }
+
+  #tempsecoule {
+    display: none;
+  }
+
+  #sunrise {
+    padding: 0px;
+    font-family: Helvetica;
+    font-size: 100px;
+  }
+
+  #countdown {
+    font-size: 60px;
+    color: black;
+  }
+
+  .strikethrough {
+    text-decoration: line-through;
+    color: red;
+  }
+</style>
+
+</head>
+<body>
+  <div id="wrapper">
+    <h1>
+      <span id="dateHeb"></span>
+      <span style="color: green;" id="current-date"></span></br>
+      <span id="hebcal-omer"></span><span class="label">    ספירת העומר  </span>
+    </h1>
+
+      <div>
+        <span class="label">הדף היומי    </span><span style="font-size: 100px; color: blue;" id="dailyDaf"></span>
+      </div></br>
+
+      <div>
+        <canvas id="clock" class="clock"></canvas>
+      </div>
+
+      <div id="tempsecoule"></div>
+
+	<div>
+      <span id="current-time"></span>
     </div>
+
+	  <div>
+		<span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 250px; color: green;" id="countdown"></span>
+      </div>
+	
+    <div><span id="sunrise"></span></div>
+    <p id="sunset-time"></p>
+  </div>
   <!-- Ajouter les scripts JavaScript ici -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -265,7 +309,7 @@ Clock.prototype.drawHourHand = function() {
 	var clock = new Clock(canvas, clockRadius());
 
 	function clockRadius() {
-		return Math.min(window.innerWidth, window.innerHeight) * 0.75;
+		return Math.min(window.innerWidth, window.innerHeight) * 0.70;
 	}
 
 	function sizeCanvas() {
@@ -463,7 +507,7 @@ fetch(url, {method: 'GET', credentials: 'omit'})
       .then(dataSun => {
 		<!--שעון חורף 2, שעון קיץ 3-->
         const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-        document.querySelector("#sunrise").innerHTML = `<span style="font-size: 60px;">זריחה</span><br> ${sunriseTime.format('HH:mm:ss')}`;
+        document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px;">זריחה</span><br> ${sunriseTime.format('HH:mm:ss')}`;
         if (sunriseTime.diff(moment(), 'seconds') <= 0) {
           // Si le soleil est déjà levé, mettre à jour le compte à rebours pour demain
           const tomorrow = moment().add(1, 'days');
@@ -474,7 +518,7 @@ fetch(url, {method: 'GET', credentials: 'omit'})
             .then(dataSunTomorrow => {
               <!--שעון חורף 2, שעון קיץ 3-->
 			  const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-              document.querySelector("#sunrise").innerHTML = `<span style="font-size: 60px;">מחר</span><br>${tomorrowSunriseTime.format('HH:mm:ss')}`;
+              document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר   </span>${tomorrowSunriseTime.format('HH:mm:ss')}`;
               updateCountdown(tomorrowSunriseTime);
             });
         } else {
