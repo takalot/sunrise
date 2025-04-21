@@ -10,44 +10,76 @@
     background-color: #f8f3e8;
     margin: 0;
     padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
   }
 
   #wrapper {
-    text-align: center;
-    width: 95vw; /* רוחב מלא של המסך */
-    padding: 20px;
+    width: 100%;
+    height: 100%;
+    position: relative;
   }
 
   *, ::before, ::after {
     box-sizing: border-box;
   }
 
-  .clock {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 50%;
+  /* מיקום השעה במרכז המסך */
+  #current-time-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2; /* שכבה קדמית */
   }
 
   #current-time {
     font-size: 300px;
-    /* border: 1px solid green; */
   }
 
-  .side {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;         /* פריסה לרוחב מלא */
-    padding: 0 30px;     /* ריווח פנימי */
-    font-size: 22px;
-    font-weight: bold;
+  /* פינה ימנית עליונה - תאריך עברי ולועזי */
+  #top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-align: right;
+    z-index: 3;
+  }
+
+  /* פינה שמאלית עליונה - הדף היומי וספירת העומר */
+  #top-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-align: left;
+    z-index: 3;
+  }
+
+  /* פינה ימנית תחתונה - זמן לזריחה */
+  #bottom-right {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    text-align: right;
+    z-index: 3;
+  }
+
+  /* פינה שמאלית תחתונה - זמני זריחה ושקיעה */
+  #bottom-left {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    z-index: 3;
   }
 
   .label {
     font-family: 'Guttman-Aram', serif;
     color: brown;
-    font-size: 28px;
+    font-size: 48px;
     margin-top: 10px;
   }
 
@@ -69,51 +101,84 @@
 
   #countdown {
     font-size: 60px;
-    color: black;
+    color: green;
+  }
+
+  #dailyDaf {
+    font-size: 100px; 
+    color: blue;
   }
 
   .strikethrough {
     text-decoration: line-through;
     color: red;
   }
-</style>
 
+  .clock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;  /* גודל השעון האנלוגי */
+    height: auto;
+    z-index: 1; /* שכבה אחורית */
+    opacity: 0.3; /* שקיפות קלה כדי שהטקסט יהיה קריא */
+  }
+  
+  .omer-section {
+    margin-top: 20px;
+  }
+</style>
 </head>
 <body>
   <div id="wrapper">
-    <h1>
-      <span id="dateHeb"></span>
-      <span style="color: green;" id="current-date"></span></br>
-      <span id="hebcal-omer"></span><span class="label">    ספירת העומר  </span>
-    </h1>
-
-      <div>
-        <span class="label">הדף היומי    </span><span style="font-size: 100px; color: blue;" id="dailyDaf"></span>
-      </div></br>
-
-      <div>
-        <canvas id="clock" class="clock"></canvas>
-      </div>
-
-      <div id="tempsecoule"></div>
-
-	<div>
+    <!-- שעון אנלוגי ברקע -->
+    <canvas id="clock" class="clock"></canvas>
+    
+    <!-- שעה במרכז המסך -->
+    <div id="current-time-container">
       <span id="current-time"></span>
     </div>
 
-	  <div>
-		<span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 250px; color: green;" id="countdown"></span>
+    <!-- פינה ימנית עליונה -->
+    <div id="top-right">
+      <h1>
+        <span id="dateHeb"></span>
+        <span style="color: green;" id="current-date"></span>
+      </h1>
+    </div>
+
+    <!-- פינה שמאלית עליונה - הדף היומי וספירת העומר -->
+    <div id="top-left">
+      <div>
+        <span class="label">הדף היומי    </span><span id="dailyDaf"></span>
       </div>
-	
-    <div><span id="sunrise"></span></div>
-    <p id="sunset-time"></p>
+      <div class="omer-section">
+        <span id="hebcal-omer"></span><span class="label">    ספירת העומר  </span>
+      </div>
+    </div>
+
+    <!-- פינה ימנית תחתונה - זמן לזריחה -->
+    <div id="bottom-right">
+      <div>
+        <span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 60px; color: green;" id="countdown"></span>
+      </div>
+    </div>
+
+    <!-- פינה שמאלית תחתונה - זמני זריחה ושקיעה -->
+    <div id="bottom-left">
+      <div><span id="sunrise"></span></div>
+      <p id="sunset-time"></p>
+    </div>
+    
+    <div id="tempsecoule"></div>
   </div>
-  <!-- Ajouter les scripts JavaScript ici -->
+
+  <!-- סקריפטים -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   
-
-<!--Suiss-clock-->
+  <!--Suiss-clock-->
 <script>
 	(function(){
 	var canvas = document.getElementById('clock');
@@ -518,7 +583,7 @@ fetch(url, {method: 'GET', credentials: 'omit'})
             .then(dataSunTomorrow => {
               <!--שעון חורף 2, שעון קיץ 3-->
 			  const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-              document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר   </span>${tomorrowSunriseTime.format('HH:mm:ss')}`;
+              document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר   ${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
               updateCountdown(tomorrowSunriseTime);
             });
         } else {
