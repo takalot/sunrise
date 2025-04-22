@@ -477,6 +477,37 @@ outputElement.textContent = dafYomiDate;
 
 <!--Omer ספירת העומר-->
 <script defer>
+function numberToHebrewWords(num, isDay = false) {
+  const dayWords = [
+    '', 'יום אחד', 'שני ימים', 'שלושה ימים', 'ארבעה ימים', 'חמישה ימים',
+    'שישה ימים', 'שבעה ימים', 'שמונה ימים', 'תשעה ימים',
+    'עשרה ימים', 'אחד עשר יום', 'שנים עשר יום', 'שלושה עשר יום',
+    'ארבעה עשר יום', 'חמישה עשר יום', 'שישה עשר יום',
+    'שבעה עשר יום', 'שמונה עשר יום', 'תשעה עשר יום',
+    'עשרים יום', 'עשרים ואחד יום', 'עשרים ושניים יום', 'עשרים ושלושה יום',
+    'עשרים וארבעה יום', 'עשרים וחמישה יום', 'עשרים ושישה יום',
+    'עשרים ושבעה יום', 'עשרים ושמונה יום', 'עשרים ותשעה יום',
+    'שלושים יום', 'שלושים ואחד יום', 'שלושים ושניים יום',
+    'שלושים ושלושה יום', 'שלושים וארבעה יום', 'שלושים וחמישה יום',
+    'שלושים ושישה יום', 'שלושים ושבעה יום', 'שלושים ושמונה יום',
+    'שלושים ותשעה יום', 'ארבעים יום', 'ארבעים ואחד יום',
+    'ארבעים ושניים יום', 'ארבעים ושלושה יום', 'ארבעים וארבעה יום',
+    'ארבעים וחמישה יום', 'ארבעים ושישה יום', 'ארבעים ושבעה יום',
+    'ארבעים ושמונה יום', 'ארבעים ותשעה יום'
+  ];
+
+  const numberWords = [
+    '', 'אחד', 'שניים', 'שלושה', 'ארבעה', 'חמישה',
+    'שישה', 'שבעה', 'שמונה', 'תשעה', 'עשרה'
+  ];
+
+  if (isDay) {
+    return dayWords[num] || `${num} ימים`;
+  }
+
+  return numberWords[num] || num.toString();
+}
+
 let dt = new Date();
 if (dt.getHours() > 19) {
   dt.setDate(dt.getDate() + 1);
@@ -494,14 +525,15 @@ fetch(url, { method: 'GET', credentials: 'omit' })
           const weeksCount = Math.floor(omerCount / 7);
           const daysCount = omerCount % 7;
 
-          const yomLabel = (omerCount === 1) ? 'יום' : 'ימים';
-          let omerString = `היום ${omerCount} ${yomLabel}`;
+          let omerString = `היום ${numberToHebrewWords(omerCount, true)}`;
 
           if (weeksCount > 0 || daysCount > 0) {
             omerString += ` שהם `;
 
             if (weeksCount > 0) {
-              omerString += `${weeksCount} ${weeksCount === 1 ? 'שבוע' : 'שבועות'}`;
+              omerString += (weeksCount === 1)
+                ? `שבוע אחד`
+                : `${numberToHebrewWords(weeksCount)} שבועות`;
             }
 
             if (weeksCount > 0 && daysCount > 0) {
@@ -509,10 +541,10 @@ fetch(url, { method: 'GET', credentials: 'omit' })
             }
 
             if (daysCount > 0) {
-              omerString += `${daysCount} ${daysCount === 1 ? 'יום' : 'ימים'}`;
+              omerString += `${numberToHebrewWords(daysCount)} ${daysCount === 1 ? 'יום' : 'ימים'}`;
             }
 
-            omerString += ` לעומר`;
+            omerString += ` בעומר`;
           }
 
           document.getElementById('hebcal-omer').innerText = omerString;
@@ -520,9 +552,6 @@ fetch(url, { method: 'GET', credentials: 'omit' })
       }
     }
   });
-</script>
-
-
 </script>
 
 <!--לועזי-->
@@ -543,9 +572,8 @@ fetch(url, { method: 'GET', credentials: 'omit' })
   setInterval(updateTime, 1000);
 </script>
 
-
-  <script>
-    // נץ ספירה לאחור
+// נץ ספירה לאחור
+  <script>    
     function updateCountdown(sunriseTime) {
       const now = moment();
       const diff = sunriseTime.diff(now, 'seconds');
@@ -585,31 +613,52 @@ fetch(url, { method: 'GET', credentials: 'omit' })
       setTimeout(() => updateCountdown(sunriseTime), 1000);
     }
 
-    const today = moment().format('YYYY-MM-DD');
-    const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
-    fetch(urlSun)
-      .then(response => response.json())
-      .then(dataSun => {
-		<!--שעון חורף 2, שעון קיץ 3-->
-        const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-        document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px;">זריחה</span><br> ${sunriseTime.format('HH:mm:ss')}`;
-        if (sunriseTime.diff(moment(), 'seconds') <= 0) {
-          // Si le soleil est déjà levé, mettre à jour le compte à rebours pour demain
-          const tomorrow = moment().add(1, 'days');
-          const tomorrowDate = tomorrow.format('YYYY-MM-DD');
-          const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
-          fetch(urlSunTomorrow)
-            .then(response => response.json())
-            .then(dataSunTomorrow => {
-              <!--שעון חורף 2, שעון קיץ 3-->
-			  const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-              document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר   ${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
-              updateCountdown(tomorrowSunriseTime);
-            });
-        } else {
-          updateCountdown(sunriseTime);
-        }
-      });
+const today = moment().format('YYYY-MM-DD');
+const urlSun = `https://api.sunrise-sunset.org/json?lat=XXX&lng=XXX&date=${today}`;
+
+fetch(urlSun)
+  .then(response => response.json())
+  .then(dataSun => {
+    // שעון חורף 2, שעון קיץ 3
+    const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
+    const sunsetTime = moment(dataSun.results.sunset, 'hh:mm:ss A').add(3, 'hours');
+    
+    document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px;">זריחה</span><br> ${sunriseTime.format('HH:mm:ss')}`;
+    document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px;">שקיעה</span><br> ${sunsetTime.format('HH:mm:ss')}`;
+    
+    if (sunriseTime.diff(moment(), 'seconds') <= 0) {
+      // אם השמש כבר זרחה, עדכן את הספירה לאחור למחר
+      const tomorrow = moment().add(1, 'days');
+      const tomorrowDate = tomorrow.format('YYYY-MM-DD');
+      const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
+      
+      fetch(urlSunTomorrow)
+        .then(response => response.json())
+        .then(dataSunTomorrow => {
+          // שעון חורף 2, שעון קיץ 3
+          const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
+          const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
+          
+          document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר ${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+          
+          // אם השמש עדיין לא שקעה היום
+          if (sunsetTime.diff(moment(), 'seconds') > 0) {
+            document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה היום ${sunsetTime.format('HH:mm:ss')}</span>`;
+          } else {
+            // אם השמש כבר שקעה, הצג את זמן השקיעה של מחר
+            document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה מחר ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
+          }
+          
+          updateCountdown(tomorrowSunriseTime);
+        });
+    } else {
+      updateCountdown(sunriseTime);
+      
+      // הצג את זמן השקיעה של היום
+      document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה היום ${sunsetTime.format('HH:mm:ss')}</span>`;
+    }
+  });
   </script>
+  
 </body>
 </html>
