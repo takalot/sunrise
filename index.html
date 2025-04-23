@@ -162,13 +162,14 @@
     <!-- פינה ימנית תחתונה - זמן לזריחה -->
     <div id="bottom-right">
       <div>
-        <span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 100px; color: green;" id="countdown"></span>
+          <div><span class="label" style="font-size: 100px; color: black;" id="sunrise"></span></div>
+		<span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 100px; color: green;" id="countdown"></span>
       </div>
     </div>
 
     <!-- פינה שמאלית תחתונה - זמני זריחה ושקיעה -->
     <div id="bottom-left">
-      <div><span id="sunrise"></span></div>
+    
       <p id="sunset-time"></p>
     </div>
     
@@ -614,7 +615,7 @@ fetch(url, { method: 'GET', credentials: 'omit' })
     }
 
 const today = moment().format('YYYY-MM-DD');
-const urlSun = `https://api.sunrise-sunset.org/json?lat=XXX&lng=XXX&date=${today}`;
+const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
 
 fetch(urlSun)
   .then(response => response.json())
@@ -623,11 +624,17 @@ fetch(urlSun)
     const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
     const sunsetTime = moment(dataSun.results.sunset, 'hh:mm:ss A').add(3, 'hours');
     
-    document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px;">זריחה</span><br> ${sunriseTime.format('HH:mm:ss')}`;
-    document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px;">שקיעה</span><br> ${sunsetTime.format('HH:mm:ss')}`;
+    // תמיד הצג את זמני הזריחה והשקיעה של היום
+    document.querySelector("#sunrise").innerHTML = `
+      <span style="font-size: 40px;">זריחה היום</span><br> 
+      ${sunriseTime.format('HH:mm:ss')}`;
+    document.querySelector("#sunset-time").innerHTML = `
+      <span style="font-size: 40px;">שקיעה היום</span><br> 
+      ${sunsetTime.format('HH:mm:ss')}`;
     
+    // בדוק האם השמש כבר זרחה
     if (sunriseTime.diff(moment(), 'seconds') <= 0) {
-      // אם השמש כבר זרחה, עדכן את הספירה לאחור למחר
+      // השמש כבר זרחה, כדאי להראות גם את זמני מחר
       const tomorrow = moment().add(1, 'days');
       const tomorrowDate = tomorrow.format('YYYY-MM-DD');
       const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
@@ -639,23 +646,21 @@ fetch(urlSun)
           const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
           const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
           
-          document.querySelector("#sunrise").innerHTML = `<span class="label">הנץ מחר ${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+          // הוסף את זמני מחר מתחת לזמני היום
+          document.querySelector("#sunrise").innerHTML += `
+            <br><span style="font-size: 30px;">זריחה מחר</span><br>
+            ${tomorrowSunriseTime.format('HH:mm:ss')}`;
           
-          // אם השמש עדיין לא שקעה היום
-          if (sunsetTime.diff(moment(), 'seconds') > 0) {
-            document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה היום ${sunsetTime.format('HH:mm:ss')}</span>`;
-          } else {
-            // אם השמש כבר שקעה, הצג את זמן השקיעה של מחר
-            document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה מחר ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
-          }
+          document.querySelector("#sunset-time").innerHTML += `
+            <br><span style="font-size: 30px;">שקיעה מחר</span><br>
+            ${tomorrowSunsetTime.format('HH:mm:ss')}`;
           
+          // עדכן את הספירה לאחור לזריחה הבאה
           updateCountdown(tomorrowSunriseTime);
         });
     } else {
+      // השמש עדיין לא זרחה, עדכן את הספירה לאחור לזריחה של היום
       updateCountdown(sunriseTime);
-      
-      // הצג את זמן השקיעה של היום
-      document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה היום ${sunsetTime.format('HH:mm:ss')}</span>`;
     }
   });
   </script>
