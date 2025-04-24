@@ -37,7 +37,7 @@
   }
 
   #current-time {
-    font-size: 300px;
+    font-size: 378px;
   }
 
   /* פינה ימנית עליונה - תאריך עברי ולועזי */
@@ -78,8 +78,8 @@
 
   .label {
     font-family: 'Guttman-Aram', serif;
-    color: brown;
-    font-size: 48px;
+    color: #5e1300;
+    font-size: 68px;
     margin-top: 10px;
   }
 
@@ -142,10 +142,16 @@
 
     <!-- פינה ימנית עליונה -->
     <div id="top-right">
-      <h1>
-        <span id="dateHeb"></span>
-        <span style="color: green;" id="current-date"></span>
-      </h1>
+
+        <span class="label" id="dateHeb"></span></br>
+		  <span class="label" id="current-date"></span>
+
+    </div>    <!-- פינה ימנית עליונה -->
+
+    <div id="top-right">
+      
+      
+      
     </div>
 
     <!-- פינה שמאלית עליונה - הדף היומי וספירת העומר -->
@@ -163,7 +169,7 @@
     <div id="bottom-right">
       <div>
           <div><span class="label" style="font-size: 100px; color: black;" id="sunrise"></span></div>
-		<span class="label">הזמן שנשאר לנץ  </span><span style="font-size: 100px; color: green;" id="countdown"></span>
+		<span style="font-size: 40px; color: black;">הזמן שנשאר לנץ</span><span style="font-size: 100px; color: green;" id="countdown"></span>
       </div>
     </div>
 
@@ -559,15 +565,17 @@ fetch(url, { method: 'GET', credentials: 'omit' })
 <script>
   function updateTime() {
     const now = new Date();
-    const dayOfMonth = now.getDate();
-    const month = now.getMonth() + 1;
+    const dayOfMonth = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const year = now.getFullYear();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
-	const timeString = `${hours}:${minutes}<span class="regular-seconds">:${seconds}</span>`;
-	document.getElementById('current-time').innerHTML = timeString;    
-    document.getElementById('current-date').textContent = `${dayOfMonth}.${month}.${year}`;
+
+    const timeString = `${hours}:${minutes}<span class="regular-seconds">:${seconds}</span>`;
+    document.getElementById('current-time').innerHTML = timeString;    
+
+    document.getElementById('current-date').textContent = `${dayOfMonth}/${month}/${year}`;
   }      
   updateTime();
   setInterval(updateTime, 1000);
@@ -614,10 +622,11 @@ fetch(url, { method: 'GET', credentials: 'omit' })
       setTimeout(() => updateCountdown(sunriseTime), 1000);
     }
 
+
 // פונקציה לעדכון זמני הזריחה והשקיעה
 function updateSunTimes() {
   const today = moment().format('YYYY-MM-DD');
-  const urlSun = `https://api.sunrise-sunset.org/json?lat=40.79213&lng=17.220&date=${today}`;
+  const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
 
   fetch(urlSun)
     .then(response => response.json())
@@ -628,11 +637,15 @@ function updateSunTimes() {
       const now = moment();
       
       // בדוק האם השמש כבר זרחה
-      if (sunriseTime.diff(now, 'seconds') <= 0) {
-        // השמש כבר זרחה, נציג את זמני מחר
+      const sunriseHasPassed = sunriseTime.diff(now, 'seconds') <= 0;
+      // בדוק האם השמש כבר שקעה
+      const sunsetHasPassed = sunsetTime.diff(now, 'seconds') <= 0;
+      
+      if (sunriseHasPassed) {
+        // השמש כבר זרחה, נציג את זריחת מחר
         const tomorrow = moment().add(1, 'days');
         const tomorrowDate = tomorrow.format('YYYY-MM-DD');
-        const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=40.79213&lng=17.220&date=${tomorrowDate}`;
+        const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
         
         fetch(urlSunTomorrow)
           .then(response => response.json())
@@ -641,17 +654,25 @@ function updateSunTimes() {
             const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
             const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
             
-            // הצג רק את זמני מחר
-            document.querySelector("#sunrise").innerHTML = `<span class="label">זריחה מחר ${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
-            document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה מחר ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
+            // הצג את זריחת מחר
+            document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px; color: black;">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+            
+            // בדוק אם השקיעה כבר עברה
+            if (sunsetHasPassed) {
+              // השמש כבר שקעה, הצג את שקיעת מחר
+              document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
+            } else {
+              // השמש עדיין לא שקעה, הצג את שקיעת היום
+              document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה היום</span><span class="label"> ${sunsetTime.format('HH:mm:ss')}</span>`;
+            }
             
             // עדכן את הספירה לאחור לזריחה הבאה
             updateCountdown(tomorrowSunriseTime);
           });
       } else {
         // השמש עדיין לא זרחה, נציג את זמני היום
-        document.querySelector("#sunrise").innerHTML = `<span class="label">זריחה היום ${sunriseTime.format('HH:mm:ss')}</span>`;
-        document.querySelector("#sunset-time").innerHTML = `<span class="label">שקיעה היום ${sunsetTime.format('HH:mm:ss')}</span>`;
+        document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px; color: black;"><span class="label">זריחה היום</span><span class="label"> ${sunriseTime.format('HH:mm:ss')}</span>`;
+        document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה היום</span><span class="label"> ${sunsetTime.format('HH:mm:ss')}</span>`;
         
         // עדכן את הספירה לאחור לזריחה של היום
         updateCountdown(sunriseTime);
