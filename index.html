@@ -81,6 +81,13 @@
     color: #5e1300;
     font-size: 68px;
     margin-top: 10px;
+  }  
+  
+  .title {
+    font-family: 'Guttman-Aram', serif;
+    color: black;
+    font-size: 40px;
+    margin-top: 10px;
   }
 
   .regular-seconds {
@@ -89,9 +96,9 @@
     color: red;
   }
 
-  #tempsecoule {
+<!--   #tempsecoule {
     display: none;
-  }
+  } -->
 
   #sunrise {
     padding: 0px;
@@ -157,7 +164,7 @@
     <!-- פינה שמאלית עליונה - הדף היומי וספירת העומר -->
     <div id="top-left">
       <div>
-        <span class="label">הדף היומי    </span><span id="dailyDaf"></span>
+        <span class="title">הדף היומי   </span><span class="label" id="dailyDaf"></span>
       </div>
       <div class="omer-section">
 
@@ -166,21 +173,28 @@
     </div>
 
     <!-- פינה ימנית תחתונה - זמן לזריחה -->
-    <div id="bottom-right">
-      <div>
-          <div><span class="label" style="font-size: 100px; color: black;" id="sunrise"></span></div>
-		<span style="font-size: 40px; color: black;">הזמן שנשאר לנץ</span><span style="font-size: 100px; color: green;" id="countdown"></span>
-      </div>
+<div id="bottom-right">
+  <div>
+    <div><span class="label" style="font-size: 100px; color: black;" id="sunrise"></span></div>
+    <div>
+      <div><span class="title">הזמן שנשאר לנץ</span></div>
     </div>
+    <div>
+      <span style="font-size: 100px; color: green;" id="countdown"></span>
+    </div>
+  </div>
+</div>
+
 
     <!-- פינה שמאלית תחתונה - זמני זריחה ושקיעה -->
-    <div id="bottom-left">
-    
-      <p id="sunset-time"></p>
+<div id="bottom-left">
+  <div>
+    <div><span class="title">שקיעה היום</span></div>
+    <div>
+      <span class="label" id="sunset-time"></span>
     </div>
-    
-    <div id="tempsecoule"></div>
   </div>
+</div>
 
   <!-- סקריפטים -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -415,7 +429,7 @@ clock.update();
 		.then(response => response.json())
 		.then(data => {
 			const dayOfWeek = [
-          'יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום השישי ויכולו השמים והארץ וכל צבאם', 'Samedi'][new Date().getDay()];
+          'יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'Samedi'][new Date().getDay()];
 			const dateHeb = data.hebrew;
 			document.getElementById('dateHeb').textContent = dayOfWeek + " " + dateHeb;
 		})
@@ -581,7 +595,7 @@ fetch(url, { method: 'GET', credentials: 'omit' })
   setInterval(updateTime, 1000);
 </script>
 
-// נץ ספירה לאחור
+<!--נץ ספירה לאחור-->
   <script>    
     function updateCountdown(sunriseTime) {
       const now = moment();
@@ -655,24 +669,25 @@ function updateSunTimes() {
             const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
             
             // הצג את זריחת מחר
-            document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px; color: black;">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+            document.querySelector("#sunrise").innerHTML = `<span class="title">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
             
             // בדוק אם השקיעה כבר עברה
             if (sunsetHasPassed) {
               // השמש כבר שקעה, הצג את שקיעת מחר
-              document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
+              document.querySelector("#sunset-time").innerHTML = `<span class="title">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
             } else {
               // השמש עדיין לא שקעה, הצג את שקיעת היום
-              document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה היום</span><span class="label"> ${sunsetTime.format('HH:mm:ss')}</span>`;
+              document.querySelector("#sunset-time").innerHTML = `${sunsetTime.format('HH:mm:ss')}`;
             }
             
             // עדכן את הספירה לאחור לזריחה הבאה
             updateCountdown(tomorrowSunriseTime);
           });
       } else {
-        // השמש עדיין לא זרחה, נציג את זמני היום
-        document.querySelector("#sunrise").innerHTML = `<span style="font-size: 40px; color: black;"><span class="label">זריחה היום</span><span class="label"> ${sunriseTime.format('HH:mm:ss')}</span>`;
-        document.querySelector("#sunset-time").innerHTML = `<span style="font-size: 40px; color: black;">שקיעה היום</span><span class="label"> ${sunsetTime.format('HH:mm:ss')}</span>`;
+// השמש עדיין לא זרחה, נציג את זמני היום
+document.querySelector("#sunrise").innerHTML = `<div><span class="title">זריחה היום</span></div><div><span class="label">${sunriseTime.format('HH:mm:ss')}</span></div>`;
+
+document.querySelector("#sunset-time").innerHTML = `<div><span class="title">שקיעה היום</span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
         
         // עדכן את הספירה לאחור לזריחה של היום
         updateCountdown(sunriseTime);
