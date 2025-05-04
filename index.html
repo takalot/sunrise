@@ -687,7 +687,7 @@ function updateSunTimes() {
 // השמש עדיין לא זרחה, נציג את זמני היום
 document.querySelector("#sunrise").innerHTML = `<div><span class="title">זריחה היום</span></div><div><span class="label">${sunriseTime.format('HH:mm:ss')}</span></div>`;
 
-document.querySelector("#sunset-time").innerHTML = `<div><span class="title">שקיעה היום</span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
+document.querySelector("#sunset-time").innerHTML = `<div><span class="title"></span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
         
         // עדכן את הספירה לאחור לזריחה של היום
         updateCountdown(sunriseTime);
