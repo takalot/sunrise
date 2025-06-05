@@ -1,205 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="he">
 <head>
   <meta charset="UTF-8">
   <title>זריחה1</title>
   <style>
-  body {
-    font-family: "David", sans-serif;
-    font-weight: bold;
-    background-color: #f8f3e8;
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-  }
+    body {
+      font-family: "David", sans-serif;
+      font-weight: bold;
+      background-color: #f8f3e8;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
 
-  #wrapper {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
+    #wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
 
-  *, ::before, ::after {
-    box-sizing: border-box;
-  }
+    *, ::before, ::after {
+      box-sizing: border-box;
+    }
 
-  /* מיקום השעה במרכז המסך */
-  #current-time-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 2; /* שכבה קדמית */
-  }
+    #current-time-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+    }
 
-  #current-time {
-    font-size: 378px;
-  }
+    #current-time {
+      font-size: 378px;
+    }
 
-  /* פינה ימנית עליונה - תאריך עברי ולועזי */
-  #top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    text-align: right;
-    z-index: 3;
-  }
+    #top-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+      z-index: 3;
+    }
 
-  /* פינה שמאלית עליונה - הדף היומי וספירת העומר */
-  #top-left {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    text-align: left;
-    z-index: 3;
-  }
+    #top-left {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-align: left;
+      z-index: 3;
+    }
 
-  /* פינה ימנית תחתונה - זמן לזריחה */
-  #bottom-right {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    text-align: right;
-    z-index: 3;
-  }
+    #bottom-right {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      text-align: right;
+      z-index: 3;
+    }
 
-  /* פינה שמאלית תחתונה - זמני זריחה ושקיעה */
-  #bottom-left {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    text-align: left;
-    z-index: 3;
-  }
+    #bottom-left {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      text-align: left;
+      z-index: 3;
+    }
 
-  .label {
-    font-family: 'Guttman-Aram', serif;
-    color: #5e1300;
-    font-size: 68px;
-    margin-top: 10px;
-  }  
-  
-  .title {
-    font-family: 'Guttman-Aram', serif;
-    color: black;
-    font-size: 40px;
-    margin-top: 10px;
-  }
+    .label {
+      font-family: 'Guttman-Aram', serif;
+      color: #5e1300;
+      font-size: 68px;
+      margin-top: 10px;
+    }  
 
-  .regular-seconds {
-    font-weight: normal;
-    font-size: 60px;
-    color: red;
-  }
+    .title {
+      font-family: 'Guttman-Aram', serif;
+      color: black;
+      font-size: 40px;
+      margin-top: 10px;
+    }
 
-<!--   #tempsecoule {
-    display: none;
-  } -->
+    .regular-seconds {
+      font-weight: normal;
+      font-size: 60px;
+      color: red;
+    }
 
-  #sunrise {
-    padding: 0px;
-    font-family: Helvetica;
-    font-size: 100px;
-  }
+    #sunrise {
+      padding: 0px;
+      font-family: Helvetica;
+      font-size: 100px;
+    }
 
-  #countdown {
-    font-size: 60px;
-    color: green;
-  }
+    #countdown {
+      font-size: 250px;
+      color: green;
+    }
 
-  #dailyDaf {
-    font-size: 100px; 
-    color: blue;
-  }
+    #dailyDaf {
+      font-size: 100px; 
+      color: blue;
+    }
 
-  .strikethrough {
-    text-decoration: line-through;
-    color: red;
-  }
+    .strikethrough {
+      text-decoration: line-through;
+      color: red;
+    }
 
-  .clock {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 130%;  /* גודל השעון האנלוגי */
-    height: auto;
-    z-index: 1; /* שכבה אחורית */
-    opacity: 0.3; /* שקיפות קלה כדי שהטקסט יהיה קריא */
-  }
-  
-  .omer-section {
-    margin-top: 20px;
-  }
-</style>
+    .clock {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 130%;
+      height: auto;
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .omer-section {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="wrapper">
-    <!-- שעון אנלוגי ברקע -->
     <canvas id="clock" class="clock"></canvas>
-    
-    <!-- שעה במרכז המסך -->
+
     <div id="current-time-container">
       <span id="current-time"></span>
     </div>
 
-    <!-- פינה ימנית עליונה -->
     <div id="top-right">
-
-        <span class="label" id="dateHeb"></span></br>
-		  <span class="label" id="current-date"></span>
-
-    </div>    <!-- פינה ימנית עליונה -->
-
-    <div id="top-right">
-      
-      
-      
+      <span class="label" id="dateHeb"></span><br>
+      <span class="label" id="current-date"></span>
     </div>
 
-    <!-- פינה שמאלית עליונה - הדף היומי וספירת העומר -->
     <div id="top-left">
       <div>
-        <span class="title">הדף היומי   </span><span class="label" id="dailyDaf"></span>
+        <span class="title">הדף היומי</span> <span class="label" id="dailyDaf"></span>
       </div>
       <div class="omer-section">
-
-	   <span class="label" id="hebcal-omer"></span>     
+        <span class="label" id="hebcal-omer"></span>
       </div>
     </div>
 
-    <!-- פינה ימנית תחתונה - זמן לזריחה -->
-<div id="bottom-right">
-  <div>
-    <div><span class="label" style="font-size: 100px; color: black;" id="sunrise"></span></div>
-    <div>
-      <div><span class="title">הזמן שנשאר לנץ</span></div>
+    <div id="bottom-right">
+      <div>
+        <div><span class="title">זמן נץ החמה</span></div>
+		<div><span  class="label" id="sunrise"></span></div>
+        <div><span class="title">הזמן שנשאר לנץ</span></div>
+        <div><span id="countdown"></span></div>
+      </div>
     </div>
-    <div>
-      <span style="font-size: 250px; color: green;" id="countdown"></span>
-    </div>
-  </div>
-</div>
 
-
-    <!-- פינה שמאלית תחתונה - זמני זריחה ושקיעה -->
-<div id="bottom-left">
-  <div>
-    <div><span class="title">שקיעה היום</span></div>
-    <div>
-      <span class="label" id="sunset-time"></span>
+    <div id="bottom-left">
+      <div>
+        <div><span class="title">שקיעה היום</span></div>
+        <div><span class="label" id="sunset-time"></span></div>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- סקריפטים -->
+  <!-- ספריות -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  
+
   <!--Suiss-clock-->
 <script>
 	(function(){
@@ -595,119 +566,65 @@ fetch(url, { method: 'GET', credentials: 'omit' })
   setInterval(updateTime, 1000);
 </script>
 
-<!--נץ ספירה לאחור-->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script>
-  function updateSunTimes() {
-    const today = moment().format('YYYY-MM-DD');
-    const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
 
-    fetch(urlSun)
-      .then(response => response.json())
-      .then(dataSun => {
-        const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-        const sunsetTime = moment(dataSun.results.sunset, 'hh:mm:ss A').add(3, 'hours');
+
+
+  <!-- סקריפט זריחה/שקיעה -->
+  <script>
+    const latitude = 31.79213;
+    const longitude = 34.220;
+
+    function displaySunData(date, isTomorrow = false) {
+      const url = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&date=${date}&formatted=0`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const sunriseUTC = moment.utc(data.results.sunrise).add(3, 'hours');
+          const sunsetUTC = moment.utc(data.results.sunset).add(3, 'hours');
+
+          document.getElementById("sunrise").innerHTML = sunriseUTC.format('HH:mm:ss');
+          document.getElementById("sunset-time").innerHTML = sunsetUTC.format('HH:mm:ss');
+          updateCountdown(sunriseUTC);
+        });
+    }
+
+    function updateCountdown(targetTime) {
+      function update() {
         const now = moment();
+        const duration = moment.duration(targetTime.diff(now));
 
-        const sunriseHasPassed = sunriseTime.diff(now, 'seconds') <= 0;
-        const sunsetHasPassed = sunsetTime.diff(now, 'seconds') <= 0;
+        if (duration.asMilliseconds() <= 0) {
+          document.getElementById("countdown").innerHTML = "00:00:00";
+          return;
+        }
 
-        if (sunriseHasPassed) {
-          // השמש כבר זרחה, נטען את זריחת מחר
-          const tomorrow = moment().add(1, 'days');
-          const tomorrowDate = tomorrow.format('YYYY-MM-DD');
-          const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
+        const hours = String(duration.hours()).padStart(2, '0');
+        const minutes = String(duration.minutes()).padStart(2, '0');
+        const seconds = String(duration.seconds()).padStart(2, '0');
 
-          fetch(urlSunTomorrow)
-            .then(response => response.json())
-            .then(dataSunTomorrow => {
-              const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-              const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
+        document.getElementById("countdown").innerHTML = `${hours}:${minutes}:${seconds}`;
+      }
 
-              document.querySelector("#sunrise").innerHTML = `<span class="title">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+      update();
+      setInterval(update, 1000);
+    }
 
-              if (sunsetHasPassed) {
-                document.querySelector("#sunset-time").innerHTML = `<span class="title">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
-              } else {
-                document.querySelector("#sunset-time").innerHTML = `${sunsetTime.format('HH:mm:ss')}`;
-              }
+    // זיהוי אם להציג את זמני מחר
+    const today = moment().format('YYYY-MM-DD');
+    fetch(`https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&date=${today}&formatted=0`)
+      .then(response => response.json())
+      .then(data => {
+        const now = moment();
+        const sunriseToday = moment.utc(data.results.sunrise).add(3, 'hours');
+        const sunsetToday = moment.utc(data.results.sunset).add(3, 'hours');
 
-              updateCountdown(tomorrowSunriseTime);
-            });
-
+        if (now.isAfter(sunriseToday) && now.isAfter(sunsetToday)) {
+          const tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+          displaySunData(tomorrow, true);
         } else {
-          // השמש עדיין לא זרחה
-          document.querySelector("#sunrise").innerHTML = `<div><span class="title">זריחה היום</span></div><div><span class="label">${sunriseTime.format('HH:mm:ss')}</span></div>`;
-          document.querySelector("#sunset-time").innerHTML = `<div><span class="title"></span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
-
-          updateCountdown(sunriseTime);
+          displaySunData(today, false);
         }
       });
-  }
-
-  function updateCountdown(targetTime) {
-    if (window.countdownTimer) {
-      clearInterval(window.countdownTimer);
-    }
-
-    function calculateTimeLeft() {
-      const now = moment();
-      const diff = targetTime.diff(now);
-      const countdownElement = document.querySelector("#countdown");
-
-      if (diff <= 0) {
-        clearInterval(window.countdownTimer);
-
-        countdownElement.classList.add('strikethrough');
-        countdownElement.textContent = 'עבר הזמן';
-        document.querySelector("#tempsecoule").innerHTML = `<span style="font-size: 250px; color: blue;">ותיקין</span>`;
-
-        setTimeout(() => {
-          document.querySelector("#tempsecoule").style.display = 'none';
-        }, 15000);
-
-        // ✅ השהייה של 5 שניות ואז רענון **רק אם באמת עבר הזמן**
-        setTimeout(() => {
-          const nowAfter = moment();
-          if (nowAfter.isAfter(targetTime)) {
-            updateSunTimes();
-          }
-        }, 5000); // השהייה של 5 שניות
-
-        return;
-      }
-
-      const duration = moment.duration(diff);
-      const hours = Math.floor(duration.asHours());
-      const minutes = duration.minutes();
-      const seconds = duration.seconds();
-
-      if (hours > 0) {
-        countdownElement.textContent =
-          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      } else {
-        countdownElement.textContent =
-          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      }
-
-      const diffSeconds = Math.floor(diff / 1000);
-      if (diffSeconds <= 60) {
-        countdownElement.style.color = 'red';
-      } else if (diffSeconds <= 120) {
-        countdownElement.style.color = 'blue';
-      } else {
-        countdownElement.style.color = 'black';
-      }
-    }
-
-    calculateTimeLeft();
-    window.countdownTimer = setInterval(calculateTimeLeft, 1000);
-  }
-
-  updateSunTimes();
-  setInterval(updateSunTimes, 3600000); // כל שעה
-</script>
-
-  
+  </script>
 </body>
 </html>
