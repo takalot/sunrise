@@ -596,149 +596,118 @@ fetch(url, { method: 'GET', credentials: 'omit' })
 </script>
 
 <!--נץ ספירה לאחור-->
-  <script>    
-    // מחיקת הפונקציה העליונה שלא בשימוש
-    
-    // פונקציה לעדכון זמני הזריחה והשקיעה
-    function updateSunTimes() {
-      const today = moment().format('YYYY-MM-DD');
-      const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+  function updateSunTimes() {
+    const today = moment().format('YYYY-MM-DD');
+    const urlSun = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${today}`;
 
-      fetch(urlSun)
-        .then(response => response.json())
-        .then(dataSun => {
-          // שעון חורף 2, שעון קיץ 3
-          const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-          const sunsetTime = moment(dataSun.results.sunset, 'hh:mm:ss A').add(3, 'hours');
-          const now = moment();
-          
-          // בדוק האם השמש כבר זרחה
-          const sunriseHasPassed = sunriseTime.diff(now, 'seconds') <= 0;
-          // בדוק האם השמש כבר שקעה
-          const sunsetHasPassed = sunsetTime.diff(now, 'seconds') <= 0;
-          
-          if (sunriseHasPassed) {
-            // השמש כבר זרחה, נציג את זריחת מחר
-            const tomorrow = moment().add(1, 'days');
-            const tomorrowDate = tomorrow.format('YYYY-MM-DD');
-            const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
-            
-            fetch(urlSunTomorrow)
-              .then(response => response.json())
-              .then(dataSunTomorrow => {
-                // שעון חורף 2, שעון קיץ 3
-                const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
-                const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
-                
-                // הצג את זריחת מחר
-                document.querySelector("#sunrise").innerHTML = `<span class="title">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
-                
-                // בדוק אם השקיעה כבר עברה
-                if (sunsetHasPassed) {
-                  // השמש כבר שקעה, הצג את שקיעת מחר
-                  document.querySelector("#sunset-time").innerHTML = `<span class="title">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
-                } else {
-                  // השמש עדיין לא שקעה, הצג את שקיעת היום
-                  document.querySelector("#sunset-time").innerHTML = `${sunsetTime.format('HH:mm:ss')}`;
-                }
-                
-                // עדכן את הספירה לאחור לזריחה הבאה
-                updateCountdown(tomorrowSunriseTime);
-              });
-          } else {
-            // השמש עדיין לא זרחה, נציג את זמני היום
-            document.querySelector("#sunrise").innerHTML = `<div><span class="title">זריחה היום</span></div><div><span class="label">${sunriseTime.format('HH:mm:ss')}</span></div>`;
-
-            document.querySelector("#sunset-time").innerHTML = `<div><span class="title"></span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
-            
-            // עדכן את הספירה לאחור לזריחה של היום
-            updateCountdown(sunriseTime);
-          }
-        });
-    }
-
-    // פונקציה לעדכון הספירה לאחור - מתוקנת
-    function updateCountdown(targetTime) {
-      // נמחק את הטיימר הקיים אם יש כזה
-      if (window.countdownTimer) {
-        clearInterval(window.countdownTimer);
-      }
-      
-      function calculateTimeLeft() {
+    fetch(urlSun)
+      .then(response => response.json())
+      .then(dataSun => {
+        const sunriseTime = moment(dataSun.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
+        const sunsetTime = moment(dataSun.results.sunset, 'hh:mm:ss A').add(3, 'hours');
         const now = moment();
-        const diff = targetTime.diff(now);
-        const countdownElement = document.querySelector("#countdown");
-        
-        // אם הגענו לזמן היעד, רענן את כל הנתונים
-        if (diff <= 0) {
-          clearInterval(window.countdownTimer);
-          
-          // הצג "עבר הזמן" ו-"ותיקין"
-if (diff <= 0) {
-  clearInterval(window.countdownTimer);
-  
-  // הצג "עבר הזמן" ו-"ותיקין"
-  countdownElement.classList.add('strikethrough');
-  countdownElement.textContent = 'עבר הזמן';
-  document.querySelector("#tempsecoule").innerHTML = `<span style="font-size: 250px; color: blue;">ותיקין</span>`;
-  
-  // הסתר את ה-"ותיקין" אחרי 15 שניות
-  setTimeout(() => {
-    document.querySelector("#tempsecoule").style.display = 'none';
-  }, 15000);
 
-  // המתן מספר שניות ואז עדכן את זמן הזריחה הבא
-  setTimeout(() => {
-    const now = moment();
-    // אם הזמן הנוכחי כבר אחרי זמן הזריחה של היום, באמת נעדכן
-    if (now.isAfter(targetTime)) {
-      updateSunTimes();
+        const sunriseHasPassed = sunriseTime.diff(now, 'seconds') <= 0;
+        const sunsetHasPassed = sunsetTime.diff(now, 'seconds') <= 0;
+
+        if (sunriseHasPassed) {
+          // השמש כבר זרחה, נטען את זריחת מחר
+          const tomorrow = moment().add(1, 'days');
+          const tomorrowDate = tomorrow.format('YYYY-MM-DD');
+          const urlSunTomorrow = `https://api.sunrise-sunset.org/json?lat=31.79213&lng=34.220&date=${tomorrowDate}`;
+
+          fetch(urlSunTomorrow)
+            .then(response => response.json())
+            .then(dataSunTomorrow => {
+              const tomorrowSunriseTime = moment(dataSunTomorrow.results.sunrise, 'hh:mm:ss A').add(3, 'hours');
+              const tomorrowSunsetTime = moment(dataSunTomorrow.results.sunset, 'hh:mm:ss A').add(3, 'hours');
+
+              document.querySelector("#sunrise").innerHTML = `<span class="title">זריחה מחר</span> <span class="label">${tomorrowSunriseTime.format('HH:mm:ss')}</span>`;
+
+              if (sunsetHasPassed) {
+                document.querySelector("#sunset-time").innerHTML = `<span class="title">שקיעה מחר</span><span class="label"> ${tomorrowSunsetTime.format('HH:mm:ss')}</span>`;
+              } else {
+                document.querySelector("#sunset-time").innerHTML = `${sunsetTime.format('HH:mm:ss')}`;
+              }
+
+              updateCountdown(tomorrowSunriseTime);
+            });
+
+        } else {
+          // השמש עדיין לא זרחה
+          document.querySelector("#sunrise").innerHTML = `<div><span class="title">זריחה היום</span></div><div><span class="label">${sunriseTime.format('HH:mm:ss')}</span></div>`;
+          document.querySelector("#sunset-time").innerHTML = `<div><span class="title"></span></div><div><span class="label">${sunsetTime.format('HH:mm:ss')}</span></div>`;
+
+          updateCountdown(sunriseTime);
+        }
+      });
+  }
+
+  function updateCountdown(targetTime) {
+    if (window.countdownTimer) {
+      clearInterval(window.countdownTimer);
     }
-  }, 5000); // המתנה של 5 שניות לפני הרענון
-  
-  return;
-}
-        
-        const duration = moment.duration(diff);
-        const hours = Math.floor(duration.asHours());
-        const minutes = duration.minutes();
-        const seconds = duration.seconds();
-        
-        // עדכון הטקסט של הספירה לאחור
-        if (hours > 0) {
-          countdownElement.textContent = 
-            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-          countdownElement.textContent = 
-            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-        
-        // שינוי צבע בהתאם לזמן שנותר
-        const diffSeconds = Math.floor(diff / 1000); // המרה למילישניות לשניות
-        if (diffSeconds <= 60) {
-          // פחות מדקה, הצג באדום
-          countdownElement.style.color = 'red';
-        } else if (diffSeconds <= 120) {
-          // פחות משתי דקות, הצג בכחול
-          countdownElement.style.color = 'blue';
-        } else {
-          countdownElement.style.color = 'black'; // צבע ברירת מחדל
-        }
+
+    function calculateTimeLeft() {
+      const now = moment();
+      const diff = targetTime.diff(now);
+      const countdownElement = document.querySelector("#countdown");
+
+      if (diff <= 0) {
+        clearInterval(window.countdownTimer);
+
+        countdownElement.classList.add('strikethrough');
+        countdownElement.textContent = 'עבר הזמן';
+        document.querySelector("#tempsecoule").innerHTML = `<span style="font-size: 250px; color: blue;">ותיקין</span>`;
+
+        setTimeout(() => {
+          document.querySelector("#tempsecoule").style.display = 'none';
+        }, 15000);
+
+        // ✅ השהייה של 5 שניות ואז רענון **רק אם באמת עבר הזמן**
+        setTimeout(() => {
+          const nowAfter = moment();
+          if (nowAfter.isAfter(targetTime)) {
+            updateSunTimes();
+          }
+        }, 5000); // השהייה של 5 שניות
+
+        return;
       }
-      
-      // חשב פעם ראשונה
-      calculateTimeLeft();
-      
-      // הגדר טיימר שמתעדכן כל שנייה
-      window.countdownTimer = setInterval(calculateTimeLeft, 1000);
+
+      const duration = moment.duration(diff);
+      const hours = Math.floor(duration.asHours());
+      const minutes = duration.minutes();
+      const seconds = duration.seconds();
+
+      if (hours > 0) {
+        countdownElement.textContent =
+          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      } else {
+        countdownElement.textContent =
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      const diffSeconds = Math.floor(diff / 1000);
+      if (diffSeconds <= 60) {
+        countdownElement.style.color = 'red';
+      } else if (diffSeconds <= 120) {
+        countdownElement.style.color = 'blue';
+      } else {
+        countdownElement.style.color = 'black';
+      }
     }
 
-    // התחל את התהליך
-    updateSunTimes();
+    calculateTimeLeft();
+    window.countdownTimer = setInterval(calculateTimeLeft, 1000);
+  }
 
-    // רענון מידע כל שעה (למקרה שהדף נשאר פתוח הרבה זמן)
-    setInterval(updateSunTimes, 3600000); // 3600000 מיליסקנדות = שעה
-  </script>
+  updateSunTimes();
+  setInterval(updateSunTimes, 3600000); // כל שעה
+</script>
+
   
 </body>
 </html>
