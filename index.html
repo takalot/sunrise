@@ -674,19 +674,30 @@ fetch(url, { method: 'GET', credentials: 'omit' })
           clearInterval(window.countdownTimer);
           
           // הצג "עבר הזמן" ו-"ותיקין"
-          countdownElement.classList.add('strikethrough');
-          countdownElement.textContent = 'עבר הזמן';
-          document.querySelector("#tempsecoule").innerHTML = `<span style="font-size: 250px; color: blue;">ותיקין</span>`;
-          
-          // הסתר את ה-"ותיקין" אחרי 15 שניות
-          setTimeout(() => {
-            document.querySelector("#tempsecoule").style.display = 'none';
-          }, 15000);
-          
-          // רענון מלא של הנתונים
-          updateSunTimes();
-          return;
-        }
+if (diff <= 0) {
+  clearInterval(window.countdownTimer);
+  
+  // הצג "עבר הזמן" ו-"ותיקין"
+  countdownElement.classList.add('strikethrough');
+  countdownElement.textContent = 'עבר הזמן';
+  document.querySelector("#tempsecoule").innerHTML = `<span style="font-size: 250px; color: blue;">ותיקין</span>`;
+  
+  // הסתר את ה-"ותיקין" אחרי 15 שניות
+  setTimeout(() => {
+    document.querySelector("#tempsecoule").style.display = 'none';
+  }, 15000);
+
+  // המתן מספר שניות ואז עדכן את זמן הזריחה הבא
+  setTimeout(() => {
+    const now = moment();
+    // אם הזמן הנוכחי כבר אחרי זמן הזריחה של היום, באמת נעדכן
+    if (now.isAfter(targetTime)) {
+      updateSunTimes();
+    }
+  }, 5000); // המתנה של 5 שניות לפני הרענון
+  
+  return;
+}
         
         const duration = moment.duration(diff);
         const hours = Math.floor(duration.asHours());
